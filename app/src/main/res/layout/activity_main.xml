@@ -10,33 +10,39 @@
         android:id="@+id/buttonCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:text="拍照/上传"
-        tools:layout_editor_absoluteX="150dp"
-        tools:layout_editor_absoluteY="222dp"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/buttonHistory"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.5"
+    />
 
     <Button
         android:id="@+id/buttonHistory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttonCamera"
-        android:layout_centerHorizontal="true"
         android:text="历史信息"
-        tools:layout_editor_absoluteX="153dp"
-        tools:layout_editor_absoluteY="341dp"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@id/buttonCamera"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.5"
+    />
 
     <Button
         android:id="@+id/buttonAbout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttonHistory"
-        android:layout_centerHorizontal="true"
         android:text="关于"
-        tools:layout_editor_absoluteX="161dp"
-        tools:layout_editor_absoluteY="470dp"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@id/buttonHistory"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.5"
+    />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
