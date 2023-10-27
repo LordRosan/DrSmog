@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:text="下一步"
         app:layout_constraintTop_toBottomOf="@id/imageView"
+        app:layout_constraintLeft_toRightOf="@id/undoButton"
         tools:ignore="MissingConstraints" />
 
     <Button
