@@ -1,40 +1,38 @@
 package com.jlu.drsmog;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.widget.TextView;
-
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import androidx.appcompat.app.AppCompatActivity;
 import com.jlu.drsmog.database.DatabaseHelper;
 
 import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
 
+    private ListView listView;
+    private DatabaseHelper dbHelper;
+    private List<String> data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history);
+        setContentView(R.layout.activity_history); // 请确保这是你的layout文件名
 
-        // 执行数据库查询操作
-        //List<String> data = getDataFromDatabase(); // 假设这是从数据库中获取数据的方法
+        listView = findViewById(R.id.listView_history);
+        dbHelper = new DatabaseHelper(this);
 
-        // 获取对显示数据的 TextView 引用
-        TextView dataTextView = findViewById(R.id.dataTextView);
-
-        // 将数据显示在布局中
-        /*if (!data.isEmpty()) {
-            StringBuilder dataString = new StringBuilder();
-            for (String item : data) {
-                dataString.append(item).append("\n");
-            }
-            dataTextView.setText(dataString.toString());
-        } else {
-            dataTextView.setText("No data found.");
-        }
+        loadData();
     }
-    /*private List<String> getDataFromDatabase() {
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        return dbHelper.getData();
-    }*/
-}}
+
+    private void loadData() {
+        data = dbHelper.getAllData();
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1, // 这是一个简单的列表项布局，你可以自定义
+                data
+        );
+
+        listView.setAdapter(adapter);
+    }
+}
