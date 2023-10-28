@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -36,10 +37,10 @@ public class CropActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crop);
 
         imageView = findViewById(R.id.imageView);
-        Button returnButton = findViewById(R.id.returnButton);
-        Button forwardUndoButton = findViewById(R.id.forwardUndoButton);
-        Button backwardUndoButton = findViewById(R.id.backwardUndoButton);
-        Button nextButton = findViewById(R.id.nextButton);
+        ImageButton returnButton = findViewById(R.id.returnButton);
+        ImageButton forwardUndoButton = findViewById(R.id.forwardUndoButton);
+        ImageButton backwardUndoButton = findViewById(R.id.backwardUndoButton);
+        ImageButton nextButton = findViewById(R.id.nextButton);
 
         //获取从CamActivity传递进来的图片
         //originalImage = getIntent().getParcelableExtra("image");

@@ -12,39 +12,37 @@
         android:layout_height="590dp"
         app:layout_constraintTop_toBottomOf="@id/returnButton" />
 
-    <Button
+    <ImageButton
         android:id="@+id/forwardUndoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="←向前撤销"
+        android:src="@drawable/ic_action_undo"
         app:layout_constraintTop_toBottomOf="@id/imageView"
         app:layout_constraintLeft_toLeftOf="parent"
         />
 
-    <Button
+    <ImageButton
         android:id="@+id/backwardUndoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="向后撤销→"
+        android:src="@drawable/ic_action_redo"
         app:layout_constraintTop_toBottomOf="@id/imageView"
         app:layout_constraintRight_toRightOf="@id/imageView"
         />
 
-    <Button
+    <ImageButton
         android:id="@+id/nextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="下一步"
         app:layout_constraintTop_toBottomOf="@id/forwardUndoButton"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         />
 
-    <Button
+    <ImageButton
         android:id="@+id/returnButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="返回"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
