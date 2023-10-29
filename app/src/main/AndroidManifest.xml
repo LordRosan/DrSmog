@@ -25,7 +25,7 @@
             android:name=".HistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".CamActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".AboutActivity"
@@ -37,7 +37,7 @@
             android:name=".ShowActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".CamActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
