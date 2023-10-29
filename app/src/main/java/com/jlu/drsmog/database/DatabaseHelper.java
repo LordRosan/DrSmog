@@ -32,7 +32,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("name", name);
-
         db.insert("my_table", null, values);
         db.close();
     }
@@ -46,7 +45,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> getAllData() {
         List<String> data = new ArrayList<>();
         String selectQuery = "SELECT * FROM my_table";
-
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
