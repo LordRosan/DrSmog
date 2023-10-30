@@ -22,13 +22,13 @@
         android:theme="@style/Theme.DrSmog"
         tools:targetApi="34">
         <activity
-            android:name=".HistoryActivity"
+            android:name=".AboutActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".AboutActivity"
+            android:name=".HistoryActivity"
             android:exported="false" />
         <activity
             android:name=".CropActivity"
