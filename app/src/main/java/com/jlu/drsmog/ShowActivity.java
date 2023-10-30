@@ -111,7 +111,7 @@ public class ShowActivity extends AppCompatActivity {
         final PopupWindow popWindow = new PopupWindow(view,
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
 
-        popWindow.setAnimationStyle(R.drawable.ic_action_pop);  //设置加载动画
+        popWindow.setAnimationStyle(R.drawable.ic_pop_bg);  //设置加载动画
 
         //这些为了点击非PopupWindow区域，PopupWindow会消失的，如果没有下面的
         //代码的话，你会发现，当你把PopupWindow显示出来了，无论你按多少次后退键
@@ -129,7 +129,7 @@ public class ShowActivity extends AppCompatActivity {
 
 
         //设置popupWindow显示的位置，参数依次是参照View，x轴的偏移量，y轴的偏移量
-        popWindow.showAsDropDown(v, 50, 0);
+        popWindow.showAsDropDown(v,-300,10);
 
         //设置popupWindow里的按钮的事件
         btn_pyq.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +162,7 @@ public class ShowActivity extends AppCompatActivity {
             Canvas canvas = new Canvas(bitmap);
 
             // 绘制图片内容
-            canvas.drawColor(Color.WHITE);
+            canvas.drawColor(Color.BLUE);
             Paint paint = new Paint();
             paint.setColor(Color.RED);
             paint.setTextSize(50);
