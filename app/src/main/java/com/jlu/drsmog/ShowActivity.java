@@ -109,7 +109,7 @@ public class ShowActivity extends AppCompatActivity {
         Button btn_email = (Button) view.findViewById(R.id.btn_email);
         //1.构造一个PopupWindow，参数依次是加载的View，宽高
         final PopupWindow popWindow = new PopupWindow(view,
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
 
         popWindow.setAnimationStyle(R.drawable.ic_action_pop);  //设置加载动画
 
@@ -129,7 +129,7 @@ public class ShowActivity extends AppCompatActivity {
 
 
         //设置popupWindow显示的位置，参数依次是参照View，x轴的偏移量，y轴的偏移量
-        popWindow.showAsDropDown(v, 50, 0);
+        popWindow.showAsDropDown(v,-300,10);
 
         //设置popupWindow里的按钮的事件
         btn_pyq.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +162,7 @@ public class ShowActivity extends AppCompatActivity {
             Canvas canvas = new Canvas(bitmap);
 
             // 绘制图片内容
-            canvas.drawColor(Color.WHITE);
+            canvas.drawColor(Color.BLUE);
             Paint paint = new Paint();
             paint.setColor(Color.RED);
             paint.setTextSize(50);
