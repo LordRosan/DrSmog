@@ -2,52 +2,58 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ic_action_pop"
+    android:background="@drawable/ic_pop_bg"
     android:orientation="horizontal">
-    <Button
-        android:id="@+id/btn_pyq"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="5dp"
-        android:text="微信"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:paddingLeft="5dp"
-        android:paddingTop="5dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="5dp"
-        android:drawableLeft="@mipmap/ic_launcher_wechat"
-        android:background="@color/cardview_shadow_start_color" />
-    <Button
-        android:id="@+id/btn_qq"
-        android:layout_width="fill_parent"
+        android:gravity="center">
+        <Button
+            android:id="@+id/btn_pyq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="微信"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:drawableLeft="@mipmap/ic_launcher_wechat"
+            android:background="@color/cardview_shadow_start_color" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="5dp"
-        android:text="QQ"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:paddingLeft="5dp"
-        android:paddingTop="5dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="5dp"
-        android:drawableLeft="@mipmap/ic_launcher_qq"
-        android:background="@color/cardview_shadow_start_color" />
-    <Button
-        android:id="@+id/btn_email"
-        android:layout_width="fill_parent"
+        android:gravity="center">
+        <Button
+            android:id="@+id/btn_qq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="QQ"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:drawableLeft="@mipmap/ic_launcher_qq"
+            android:background="@color/cardview_shadow_start_color" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="5dp"
-        android:text="邮件"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:paddingLeft="5dp"
-        android:paddingTop="5dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="5dp"
-        android:drawableLeft="@mipmap/ic_launcher_email"
-        android:background="@color/cardview_shadow_start_color" />
+        android:gravity="center">
+        <Button
+            android:id="@+id/btn_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="邮件"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:drawableLeft="@mipmap/ic_launcher_email"
+            android:background="@color/cardview_shadow_start_color" />
+    </LinearLayout>
+
+
+
 
 </LinearLayout>

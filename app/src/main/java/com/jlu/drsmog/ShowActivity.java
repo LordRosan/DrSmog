@@ -109,9 +109,9 @@ public class ShowActivity extends AppCompatActivity {
         Button btn_email = (Button) view.findViewById(R.id.btn_email);
         //1.构造一个PopupWindow，参数依次是加载的View，宽高
         final PopupWindow popWindow = new PopupWindow(view,
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
 
-        popWindow.setAnimationStyle(R.drawable.ic_action_pop);  //设置加载动画
+        popWindow.setAnimationStyle(R.drawable.ic_pop_bg);  //设置加载动画
 
         //这些为了点击非PopupWindow区域，PopupWindow会消失的，如果没有下面的
         //代码的话，你会发现，当你把PopupWindow显示出来了，无论你按多少次后退键
