@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".AboutActivity">
 
+    <ImageButton
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:id="@+id/btn_back"
+        android:src="@drawable/ic_action_back"
+        android:background="@drawable/back_button_shape"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingLeft="9dp"
+        android:paddingRight="9dp"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"
+        android:contentDescription="@string/btn_back"
+        app:tint="@color/black"/>
 
     <TextView
         android:id="@+id/textView"
@@ -14,16 +28,15 @@
         android:text="OURTEAM"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btn_back" />
+
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/textView">
 
         <TableRow>
             <TextView
