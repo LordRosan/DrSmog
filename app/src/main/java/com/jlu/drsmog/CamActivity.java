@@ -301,7 +301,7 @@ public class CamActivity extends AppCompatActivity {
 
     private void startCropActivityWithImage() {
         Intent intent = new Intent(CamActivity.this, CropActivity.class);
-        intent.putExtra("image", imagePath);
+        // intent.putExtra("image", imagePath);
         startActivity(intent);
         finish();
     }
