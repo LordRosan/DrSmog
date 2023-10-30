@@ -11,6 +11,7 @@
         android:id="@+id/btn_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/btn_back"
         android:src="@drawable/ic_action_back"
         android:background="@drawable/back_button_shape"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,9 +26,10 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <ImageButton
-        android:id="@+id/btn_shoot"
+        android:id="@+id/btn_capture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/btn_shoot"
         android:background="@drawable/circle_button_shape"
         android:src="@drawable/ic_action_camera"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -42,22 +44,24 @@
         android:gravity="center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cam_preview"
-        app:layout_constraintLeft_toRightOf="@id/btn_shoot"
+        app:layout_constraintLeft_toRightOf="@id/btn_capture"
         app:layout_constraintRight_toRightOf="parent" >
 
         <ImageButton
-            android:id="@+id/btn_load"
+            android:id="@+id/btn_import"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_load_photo" />
+            android:contentDescription="@string/btn_load_photo"
+            android:src="@drawable/ic_action_load_photo"
+            android:background="@drawable/load_button_shape" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/load_photo"
-            android:textSize="12sp" />
+            android:text="@string/btn_load_photo"
+            android:textColor="#FFF"
+            android:textSize="13sp" />
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
