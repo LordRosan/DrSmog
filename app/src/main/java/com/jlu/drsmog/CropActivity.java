@@ -2,6 +2,8 @@ package com.jlu.drsmog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.animation.AnimatorInflater;
+import android.animation.StateListAnimator;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,10 +39,10 @@ public class CropActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crop);
 
         imageView = findViewById(R.id.imageView);
-        ImageButton returnButton = findViewById(R.id.returnButton);
-        ImageButton forwardUndoButton = findViewById(R.id.forwardUndoButton);
-        ImageButton backwardUndoButton = findViewById(R.id.backwardUndoButton);
-        ImageButton nextButton = findViewById(R.id.nextButton);
+        ImageButton BackButton = findViewById(R.id.back_image_button);
+        ImageButton UndoButton = findViewById(R.id.undo_image_button);
+        ImageButton RedoButton = findViewById(R.id.redo_image_button);
+        ImageButton NextButton = findViewById(R.id.next_image_button);
 
         //获取从CamActivity传递进来的图片
         //originalImage = getIntent().getParcelableExtra("image");
@@ -62,14 +64,14 @@ public class CropActivity extends AppCompatActivity {
         pathPaint.setColor(Color.RED);
 
         //返回按钮的具体实现
-        returnButton.setOnClickListener(v -> {
+        BackButton.setOnClickListener(v -> {
             Intent intent = new Intent(CropActivity.this, CamActivity.class);
             startActivity(intent);
             finish();
         });
 
         //向前撤销按钮的具体实现
-        forwardUndoButton.setOnClickListener(v -> {
+        UndoButton.setOnClickListener(v -> {
             if (!undoStack.isEmpty()) {
                 redoStack.push(currentImage);
                 currentImage = undoStack.pop();
@@ -78,7 +80,7 @@ public class CropActivity extends AppCompatActivity {
         });
 
         //向后撤销按钮的具体实现
-        backwardUndoButton.setOnClickListener(v -> {
+        RedoButton.setOnClickListener(v -> {
             if (!redoStack.isEmpty()) {
                 undoStack.push(currentImage);
                 currentImage = redoStack.pop();
@@ -87,7 +89,7 @@ public class CropActivity extends AppCompatActivity {
         });
 
         //下一步按钮的具体实现
-        nextButton.setOnClickListener(v -> {
+        NextButton.setOnClickListener(v -> {
             Intent intent = new Intent(CropActivity.this, ShowActivity.class);
             intent.putExtra("cropped_image", currentImage);
             startActivity(intent);
