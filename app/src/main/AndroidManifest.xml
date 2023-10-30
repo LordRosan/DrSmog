@@ -31,13 +31,13 @@
             android:name=".HistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".CropActivity"
             android:exported="false" />
         <activity
             android:name=".ShowActivity"
             android:exported="false" />
         <activity
-            android:name=".CropActivity"
+            android:name=".MainActivity"
             android:hardwareAccelerated="true"
             android:exported="true">
             <intent-filter>
