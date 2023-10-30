@@ -18,7 +18,7 @@
         android:paddingRight="9dp"
         android:paddingTop="1dp"
         android:paddingBottom="1dp"
-        android:contentDescription="@string/back"
+        android:contentDescription="@string/btn_back"
         app:tint="@color/black"/>
 
     <TextView
