@@ -6,15 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".HistoryActivity">
 
-    <TextView
-        android:id="@+id/dataTextView"
+    <ImageButton
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:id="@+id/btn_back"
+        android:src="@drawable/ic_action_back"
+        android:background="@drawable/back_button_shape"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingLeft="9dp"
+        android:paddingRight="9dp"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"
+        android:contentDescription="@string/btn_back"
+        app:tint="@color/black"/>
+
+    <ListView
+        android:id="@+id/listView_history"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="数据将在此处显示" />
+        app:layout_constraintTop_toBottomOf="@id/btn_back"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
