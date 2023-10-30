@@ -25,11 +25,14 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="OURTEAM"
+        android:text="OURTEAM！"
+        android:textStyle="bold|italic"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_back" />
-
+        app:layout_constraintTop_toBottomOf="@id/btn_back"
+        android:textSize="72sp"
+        android:paddingBottom="30dp"
+        />
 
     <TableLayout
         android:layout_width="match_parent"
@@ -43,13 +46,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="姓名（按姓氏拼音排序）" />
+                android:text="姓名\n(按姓氏拼音排序）"
+                android:textSize="20sp"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="学号" />
+                android:text="学号"
+                android:textSize="20sp"
+                android:gravity="center_vertical"/>
         </TableRow>
 
         <TableRow>
