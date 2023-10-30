@@ -3,25 +3,31 @@ package com.jlu.drsmog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -37,7 +43,9 @@ public class ShowActivity extends AppCompatActivity {
     private Button btn_back;
     private Button btn_store;
     private Context context;
-
+    private ImageView imageView;
+    //定义一个保存图片的File变量
+    private File currentImageFile = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,41 +59,52 @@ public class ShowActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        btn_store=(Button)findViewById(R.id.btn_store);
+        ImageView imageView = findViewById(R.id.iv1);
+        Intent intent = getIntent();
+
+        if (intent != null) {
+            // 如果传递的是字节数组
+            byte[] byteArray = intent.getByteArrayExtra("image");
+            if (byteArray != null) {
+                Bitmap imageBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                imageView.setImageBitmap(imageBitmap);
+            }
+            // 如果传递的是文件路径
+            // String imagePath = intent.getStringExtra("imagePath");
+            // if (imagePath != null) {
+            //     Bitmap imageBitmap = BitmapFactory.decodeFile(imagePath);
+            //     imageView.setImageBitmap(imageBitmap);
+            // }
+        }
         btn_store.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bitmap bitmap = generateImage(); // 生成要分享的图片
+                // 获取当前显示的图片
+                Drawable drawable = imageView.getDrawable();
+                Bitmap imageBitmap = ((BitmapDrawable) drawable).getBitmap();
 
-                String fileName = "image.jpg"; // 图片文件名
-                FileOutputStream fos = null;
+                // 保存图片到外部存储
+                String filename = "image.jpg"; // 指定文件名
+                FileOutputStream out = null;
                 try {
-                    // 获取存储目录
-                    String folderPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Pictures";
-                    // 创建存储目录
-                    File folder = new File(folderPath);
-                    if (!folder.exists()) {
-                        folder.mkdirs();
-                    }
-                    // 创建图片文件
-                    File file = new File(folderPath, fileName);
-                    fos = new FileOutputStream(file);
-                    // 将Bitmap保存为JPEG格式图片
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    fos.flush();
-                    fos.close();
+                    File file = new File(Environment.getExternalStorageDirectory(), filename);
+                    out = new FileOutputStream(file);
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // 保存为JPEG格式
+                    out.flush();
+                    out.close();
 
-                    // 通知系统图库更新
-                    MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, null, null);
-                } catch (IOException e) {
+                    // 显示一个提示，告诉用户图片已保存
+                    Toast.makeText(getApplicationContext(), "图片已保存", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
                     e.printStackTrace();
+                    // 处理保存失败的情况
                 } finally {
-                    if (fos != null) {
-                        try {
-                            fos.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                    try {
+                        if (out != null) {
+                            out.close();
                         }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
