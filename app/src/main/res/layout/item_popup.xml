@@ -7,18 +7,45 @@
 
     <Button
         android:id="@+id/btn_pyq"
-        android:layout_width="wrap_content"
+        android:layout_width="130sp"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:text="朋友圈"
-        android:textSize="18sp" />
-
+        android:text="微信"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
+        android:drawableLeft="@mipmap/ic_launcher_wechat"
+        android:background="@color/cardview_shadow_start_color" />
     <Button
         android:id="@+id/btn_qq"
-        android:layout_width="wrap_content"
+        android:layout_width="130sp"
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:text="QQ"
-        android:textSize="18sp" />
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
+        android:drawableLeft="@mipmap/ic_launcher_qq"
+        android:background="@color/cardview_shadow_start_color" />
+    <Button
+        android:id="@+id/btn_email"
+        android:layout_width="130sp"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="邮件"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
+        android:drawableLeft="@mipmap/ic_launcher_email"
+        android:background="@color/cardview_shadow_start_color" />
 
 </LinearLayout>

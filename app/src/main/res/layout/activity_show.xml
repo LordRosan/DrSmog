@@ -13,40 +13,81 @@
         android:adjustViewBounds="true"
         app:layout_constraintDimensionRatio="3:4"
         app:layout_constraintTop_toTopOf="parent"
+
         android:layout_marginTop="32dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"/>
 
-
-    <Button
-        android:id="@+id/btn_retake"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="重拍"
         app:layout_constraintTop_toBottomOf="@id/iv1"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_back"
+                android:text="重拍"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="5dp"
+                android:drawableLeft="@drawable/ic_action_retake"
+                android:background=""
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_store"
+                android:text="保存"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="5dp"
+                android:drawableLeft="@drawable/ic_action_store"
+                android:background=""
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_share"
+                android:text="分享"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="5dp"
+                android:drawableLeft="@drawable/ic_action_share"
+                android:background=""
+                android:layout_gravity="center"/>
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_store"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="保存"
-        app:layout_constraintTop_toBottomOf="@id/iv1"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_share"
-        android:text="分享"
-        app:layout_constraintTop_toBottomOf="@id/iv1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+    </LinearLayout>
 
 
 
