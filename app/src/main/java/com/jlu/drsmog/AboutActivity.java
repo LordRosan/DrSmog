@@ -1,8 +1,13 @@
 package com.jlu.drsmog;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -40,4 +45,27 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        if (hasFocus) {
+            // 当窗口获得焦点时执行的代码
+            TextView textView = findViewById(R.id.textView);
+
+            int startColor = Color.parseColor("#FF0000");  // 从XML中的渐变定义提取的颜色值
+            int endColor = Color.parseColor("#0000FF");
+
+            // 创建着色器
+            Shader textShader = new LinearGradient(0, 0, textView.getWidth(), textView.getHeight(),
+                    startColor,
+                    endColor,
+                    Shader.TileMode.CLAMP);
+
+            // 将着色器应用于TextView的文字
+            textView.getPaint().setShader(textShader);
+        }
+    }
+
+
 }
