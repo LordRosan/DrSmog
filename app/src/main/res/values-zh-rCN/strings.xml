@@ -2,5 +2,5 @@
     <string name="app_name">烟气博士</string>
     <string name="btn_back">返回</string>
     <string name="btn_load_photo">导入图片</string>
-    <string name="btn_shoot">拍摄</string>
+    <string name="btn_capture">拍摄</string>
 </resources>
