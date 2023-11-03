@@ -33,9 +33,7 @@
     <ImageView
         android:id="@+id/iv1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:adjustViewBounds="true"
-        app:layout_constraintDimensionRatio="3:4"
+        android:layout_height="480dp"
         app:layout_constraintTop_toBottomOf="@id/rl1"
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
