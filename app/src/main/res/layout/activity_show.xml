@@ -40,16 +40,16 @@
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"/>
+
     <TextView
+        android:id="@+id/tv2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/iv1"
         android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:id="@+id/tv2"
         android:text="此处显示计算结果，waiting..."
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        app:layout_constraintTop_toBottomOf="@id/iv1"
+        tools:layout_editor_absoluteX="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
