@@ -25,7 +25,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 .inflate(R.layout.item_history, parent, false);
         return new ViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Record record = records.get(position);
@@ -33,7 +32,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.textViewBlackness.setText(record.getBlackness());
         holder.textViewPath.setText(record.getPath());
     }
-
     @Override
     public int getItemCount() {
         return records.size();
