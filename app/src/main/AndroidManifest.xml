@@ -3,12 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
     <application
@@ -21,6 +24,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DrSmog"
         tools:targetApi="34">
+        <service
+            android:name=".Calculate"
+            android:enabled="true"
+            android:exported="true"></service>
+
+
         <activity
             android:name=".AboutActivity"
             android:exported="false" />
@@ -38,8 +47,8 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:hardwareAccelerated="true"
-            android:exported="true">
+            android:exported="true"
+            android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
