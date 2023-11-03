@@ -20,6 +20,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -29,7 +30,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Stack;
 
 public class CropActivity extends AppCompatActivity {
@@ -51,7 +54,11 @@ public class CropActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] != PERMISSION_GRANTED) {
                     Toast.makeText(this, "Read permission is required!", Toast.LENGTH_LONG).show();
                 } else {
-                    GetImagePath();
+                    try {
+                        GetOriginalImage();
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 break;
             default:
@@ -69,7 +76,11 @@ public class CropActivity extends AppCompatActivity {
         ImageButton RedoButton = findViewById(R.id.redo_image_button);
         ImageButton NextButton = findViewById(R.id.next_image_button);
 
-        GetImagePath();
+        try {
+            GetOriginalImage();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         currentImage = originalImage.copy(originalImage.getConfig(), true);
 
         if (originalImage != null) {
@@ -200,16 +211,26 @@ public class CropActivity extends AppCompatActivity {
         }
     }
 
-    private void GetImagePath() {
+    private void GetOriginalImage() throws FileNotFoundException {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
             return;
         }
 
         Intent intent = getIntent();
-        String imagePath = intent.getStringExtra("image_path");
-        if (imagePath != null) {
-            originalImage = BitmapFactory.decodeFile(imagePath);
+        boolean isPath = intent.getBooleanExtra("isPath", true);
+
+        if (isPath) {
+            String imagePath = intent.getStringExtra("image_path");
+            if (imagePath != null) {
+                originalImage = BitmapFactory.decodeFile(imagePath);
+            }
+        } else {
+            Uri imageUri = Uri.parse(intent.getStringExtra("image_uri"));
+            if (imageUri != null) {
+                InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                originalImage = BitmapFactory.decodeStream(inputStream);
+            }
         }
     }
 }

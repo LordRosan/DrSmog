@@ -3,12 +3,16 @@ package com.jlu.drsmog;
 import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -26,8 +30,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.util.Size;
+import android.util.SparseArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.widget.ImageButton;
@@ -67,6 +74,16 @@ public class CamActivity extends AppCompatActivity {
     private CameraManager cameraManager;
     private File file;
     private ImageReader reader;
+    private Cursor actualImageCursor;
+
+    private static final SparseArray<Integer> ORIENTATIONS = new SparseArray<>();
+    static {
+        ORIENTATIONS.append(Surface.ROTATION_0, 0);
+        ORIENTATIONS.append(Surface.ROTATION_90, 90);
+        ORIENTATIONS.append(Surface.ROTATION_180, 180);
+        ORIENTATIONS.append(Surface.ROTATION_270, 270);
+    }
+
 
     String imagePath;
 
@@ -152,6 +169,9 @@ public class CamActivity extends AppCompatActivity {
                 captureBuilder.addTarget(reader.getSurface());
                 captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
 
+                int rotation = getRotationCompensation(cameraId, this, getApplicationContext());
+                captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, rotation);
+
                 imagePath = Environment.getExternalStorageDirectory() + "/image.jpg";
                 file = new File(imagePath);
 
@@ -193,7 +213,13 @@ public class CamActivity extends AppCompatActivity {
                     @Override
                     public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                         super.onCaptureCompleted(session, request, result);
-                        startCropActivityWithImage();
+                        if (imagePath != null) {
+                            Intent intent = new Intent(CamActivity.this, CropActivity.class);
+                            intent.putExtra("isPath", true);
+                            intent.putExtra("image_path", imagePath);
+                            startActivity(intent);
+                            finish();
+                        }
                     }
                 };
 
@@ -218,8 +244,37 @@ public class CamActivity extends AppCompatActivity {
         });
 
         btn_import.setOnClickListener(v -> {
-            // TODO: 从文件上传图片
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.dialog_select_image_src));
+            String[] options = {getString(R.string.opt_gallery), getString(R.string.opt_file_manager)};
+            builder.setItems(options, (dialog, which) -> {
+               if (which == 0) {
+                   openGallery();
+               } else {
+                   openFilePicker();
+               }
+            });
+            builder.show();
         });
+    }
+
+    private int getRotationCompensation(String cameraId, Activity activity, Context context) throws CameraAccessException {
+        // 获取设备的方向
+        int deviceRotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+        int rotationCompensation = ORIENTATIONS.get(deviceRotation);
+
+        // 获取摄像头的方向
+        CameraManager cameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+        int sensorOrientation = cameraManager.getCameraCharacteristics(cameraId).get(CameraCharacteristics.SENSOR_ORIENTATION);
+
+        // 为前置摄像头做调整
+        if (cameraManager.getCameraCharacteristics(cameraId).get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT) {
+            rotationCompensation = (sensorOrientation + rotationCompensation) % 360;
+        } else {  // 后置摄像头
+            rotationCompensation = (sensorOrientation - rotationCompensation + 360) % 360;
+        }
+
+        return rotationCompensation;
     }
 
     private TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
@@ -320,10 +375,30 @@ public class CamActivity extends AppCompatActivity {
         }
     }
 
-    private void startCropActivityWithImage() {
-        Intent intent = new Intent(CamActivity.this, CropActivity.class);
-        intent.putExtra("image_path", imagePath);
-        startActivity(intent);
-        finish();
+    private static final int PICK_IMAGE_FROM_GALLERY = 1;
+    private static final int PICK_IMAGE_FROM_FILE = 2;
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, PICK_IMAGE_FROM_GALLERY);
+    }
+
+    private void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_FROM_FILE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && data != null) {
+            Uri selectedImageUri = data.getData();
+            Intent intent = new Intent(CamActivity.this, CropActivity.class);
+            intent.putExtra("isPath", false);
+            intent.putExtra("image_uri", selectedImageUri.toString());
+            startActivity(intent);
+            finish();
+        }
     }
 }
