@@ -28,6 +28,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -47,6 +50,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import java.text.SimpleDateFormat;
@@ -102,19 +106,23 @@ public class ShowActivity extends AppCompatActivity {
         // 显示裁剪后的图片在ImageView界面上
         iv1.setImageBitmap(currentImage);
         float darkness = getIntent().getFloatExtra("darkness_value", 0); // 0为默认值
+        float total = 255;
+        float result = darkness / total;
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.####");
+        String formattedResult = decimalFormat.format(result);
         if(darkness==0)
-            ShareText="全白 黑度值:"+darkness;
+            ShareText="全白 黑度值:"+formattedResult+" (0级)";
         if(darkness>0&&darkness<=51)
-            ShareText="微灰 黑度值:"+darkness;
+            ShareText="微灰 黑度值:"+formattedResult+" (1级)";
         if(darkness>51&&darkness<=102)
-            ShareText="灰 黑度值:"+darkness;
+            ShareText="灰 黑度值:"+formattedResult+" (2级)";
         if(darkness>102&&darkness<=153)
-            ShareText="深灰 黑度值:"+darkness;
+            ShareText="深灰 黑度值:"+formattedResult+" (3级)";
         if(darkness>153&&darkness<=204)
-            ShareText="灰黑 黑度值:"+darkness;
+            ShareText="灰黑 黑度值:"+formattedResult+" (4级)";
         if(darkness>204&&darkness<=255)
-            ShareText="全黑 黑度值:"+darkness;
-        String darknessLevel = "Darkness Level: " + darkness;
+            ShareText="全黑 黑度值:"+formattedResult+" (5级)";
         tv2.setText(ShareText);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
