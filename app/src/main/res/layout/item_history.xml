@@ -26,4 +26,11 @@
         android:layout_height="wrap_content"
         android:text="Path"/>
 
+    <!-- 显示图片名的ImageView -->
+    <TextView
+        android:id="@+id/textView_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name"/>
+
 </LinearLayout>
