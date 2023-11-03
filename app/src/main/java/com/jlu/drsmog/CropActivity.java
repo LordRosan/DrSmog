@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.animation.AnimatorInflater;
 import android.animation.StateListAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,6 +25,7 @@ import android.graphics.PorterDuffXfermode;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -48,6 +50,9 @@ public class CropActivity extends AppCompatActivity {
     private Stack<Bitmap> redoStack = new Stack<>();
     private Path currentPath;
     private Paint pathPaint;
+    private boolean isPath;
+    private String imagePath;
+    private Uri imageUri;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -68,6 +73,7 @@ public class CropActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,6 +139,13 @@ public class CropActivity extends AppCompatActivity {
             if (croppedImageFile != null) {
                 Intent calculateIntent = new Intent(this, Calculate.class);
                 calculateIntent.putExtra("cropped_image_path", croppedImageFile.getAbsolutePath());
+
+                calculateIntent.putExtra("isPath", isPath);
+                if (isPath) {
+                    calculateIntent.putExtra("original_image_path", imagePath);
+                } else {
+                    calculateIntent.putExtra("original_image_uri", imageUri);
+                }
                 startService(calculateIntent);
             }
         });
@@ -226,15 +239,15 @@ public class CropActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        boolean isPath = intent.getBooleanExtra("isPath", true);
+        isPath = intent.getBooleanExtra("isPath", true);
 
         if (isPath) {
-            String imagePath = intent.getStringExtra("image_path");
+            imagePath = intent.getStringExtra("image_path");
             if (imagePath != null) {
                 originalImage = BitmapFactory.decodeFile(imagePath);
             }
         } else {
-            Uri imageUri = Uri.parse(intent.getStringExtra("image_uri"));
+            imageUri = Uri.parse(intent.getStringExtra("image_uri"));
             if (imageUri != null) {
                 InputStream inputStream = getContentResolver().openInputStream(imageUri);
                 originalImage = BitmapFactory.decodeStream(inputStream);
@@ -245,6 +258,7 @@ public class CropActivity extends AppCompatActivity {
     private File saveBitmapToFile(Bitmap bitmap) {
         try {
             File outputDir = getCacheDir();
+            Log.i("myLog", outputDir.toString());
             File outputFile = File.createTempFile("cropped_image", ".png", outputDir);
             try (FileOutputStream out = new FileOutputStream(outputFile)) {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
