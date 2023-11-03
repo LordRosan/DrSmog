@@ -1,16 +1,20 @@
 package com.jlu.drsmog.database;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.util.Log;
+import com.jlu.drsmog.adapters.Record;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "my_database.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
+    private static final String TABLE_NAME = "my_table";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -18,43 +22,71 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE = "CREATE TABLE my_table (id INTEGER PRIMARY KEY, name TEXT)";
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (id INTEGER PRIMARY KEY, time TEXT, blackness TEXT, path TEXT)";
         db.execSQL(CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS my_table");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 
-    public void addData(String name) {
+    public void addData(String time, String blackness, String path) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("name", name);
-        db.insert("my_table", null, values);
+        values.put("time", time);
+        values.put("blackness", blackness);
+        values.put("path", path);
+        db.insert(TABLE_NAME, null, values);
         db.close();
     }
 
     public void deleteData(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete("my_table", "id = ?", new String[]{String.valueOf(id)});
+        db.delete(TABLE_NAME, "id = ?", new String[]{String.valueOf(id)});
         db.close();
     }
 
-    public List<String> getAllData() {
-        List<String> data = new ArrayList<>();
-        String selectQuery = "SELECT * FROM my_table";
+    public List<Record> getAllData() {
+        List<Record> recordsList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("DatabaseHelper", "Database opened for reading."); // 日志输出打开数据库
+
+        Cursor cursor = db.query(TABLE_NAME, new String[]{"id", "time", "blackness", "path"}, null, null, null, null, null);
+        Log.d("DatabaseHelper", "Query executed."); // 日志输出执行查询
 
         if (cursor.moveToFirst()) {
             do {
-                data.add(cursor.getString(1));  // Assuming 'name' is at index 1
-            } while (cursor.moveToNext());
-        }
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                String time = cursor.getString(cursor.getColumnIndexOrThrow("time"));
+                String blackness = cursor.getString(cursor.getColumnIndexOrThrow("blackness"));
+                String path = cursor.getString(cursor.getColumnIndexOrThrow("path"));
 
+                // 创建新的 Record 对象并加入到 list 中
+                Record record = new Record(id, time, blackness, path);
+                recordsList.add(record);
+
+                Log.d("DatabaseHelper", "Record added: " + record.toString()); // 日志输出每条记录
+            } while (cursor.moveToNext());
+        } else {
+            Log.d("DatabaseHelper", "Cursor is empty. No data to retrieve."); // 日志输出空结果集
+        }
         cursor.close();
-        return data;
+        db.close();
+        Log.d("DatabaseHelper", "Database closed."); // 日志输出关闭数据库
+        Log.d("DatabaseHelper", "Total items retrieved: " + recordsList.size()); // 日志输出数据项总数
+        return recordsList;
+    }
+
+    public int getIdByName(String blackness) {
+        int id = -1;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_NAME, new String[]{"id"}, "blackness = ?", new String[]{blackness}, null, null, null);
+        if (cursor.moveToFirst()) {
+            id = cursor.getInt(0);  // 'id' is at index 0
+        }
+        cursor.close();
+        return id;
     }
 }

@@ -29,7 +29,7 @@
             android:name=".CamActivity"
             android:exported="false" />
         <activity
-            android:name=".HistoryActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".CropActivity"
@@ -38,7 +38,7 @@
             android:name=".ShowActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".HistoryActivity"
             android:hardwareAccelerated="true"
             android:exported="true">
             <intent-filter>

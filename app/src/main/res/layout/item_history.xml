@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <!-- 显示时间的文本视图 -->
+    <TextView
+        android:id="@+id/textView_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time"/>
+
+    <!-- 显示黑度值的文本视图 -->
+    <TextView
+        android:id="@+id/textView_blackness"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Blackness Value"/>
+
+    <!-- 显示图片的ImageView -->
+    <TextView
+        android:id="@+id/textView_path"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Path"/>
+
+</LinearLayout>
