@@ -205,6 +205,7 @@ public class CropActivity extends AppCompatActivity {
             redoStack.clear();
             currentImage = resultBitmap;
             imageView.setImageBitmap(currentImage);
+
         }
     }
 
