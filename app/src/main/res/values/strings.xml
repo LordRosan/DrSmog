@@ -7,4 +7,7 @@
     <string name="opt_gallery">Gallery</string>
     <string name="opt_file_manager">File Manager</string>
     <string name="save_success">Save Success</string>
+    <string name="save_dialog_title">Save Image Name</string>
+    <string name="save_dialog_confirm">Confirm</string>
+    <string name="save_dialog_cancel">Cencel</string>
 </resources>

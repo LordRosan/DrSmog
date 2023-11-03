@@ -7,4 +7,7 @@
     <string name="opt_gallery">图库</string>
     <string name="opt_file_manager">文件管理器</string>
     <string name="save_success">保存成功</string>
+    <string name="save_dialog_title">保存文件名称</string>
+    <string name="save_dialog_confirm">确认</string>
+    <string name="save_dialog_cancel">取消</string>
 </resources>
