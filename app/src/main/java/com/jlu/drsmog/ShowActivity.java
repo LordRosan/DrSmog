@@ -63,23 +63,21 @@ public class ShowActivity extends AppCompatActivity {
         Bitmap croppedImage = getIntent().getParcelableExtra("croppedImage");
         // 显示裁剪后的图片在ImageView界面上
         iv1.setImageBitmap(croppedImage);
-        ShareText="乌卡拉卡 小魔仙全身变！";
         float darkness = getIntent().getFloatExtra("dacker_value", 0); // 0为默认值
         if(darkness==0)
             ShareText="全白 黑度值:"+darkness;
-        if(darkness>0&&darkness<=0.2)
+        if(darkness>0&&darkness<=51)
             ShareText="微灰 黑度值:"+darkness;
-        if(darkness>0.2&&darkness<=0.4)
+        if(darkness>51&&darkness<=102)
             ShareText="灰 黑度值:"+darkness;
-        if(darkness>0.4&&darkness<=0.6)
+        if(darkness>102&&darkness<=153)
             ShareText="深灰 黑度值:"+darkness;
-        if(darkness>0.6&&darkness<=0.8)
-            ShareText="黑 黑度值:"+darkness;
-        if(darkness==1)
+        if(darkness>153&&darkness<=204)
+            ShareText="灰黑 黑度值:"+darkness;
+        if(darkness>204&&darkness<=255)
             ShareText="全黑 黑度值:"+darkness;
-        String darknessText = "Darkness Level: " + darkness;
+        String darknessLevel = "Darkness Level: " + darkness;
         tv2.setText(ShareText);
-        // ... (使用dacker值的代码)
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
