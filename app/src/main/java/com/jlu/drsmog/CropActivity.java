@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.animation.AnimatorInflater;
 import android.animation.StateListAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,8 +22,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -31,8 +34,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Stack;
 
 public class CropActivity extends AppCompatActivity {
@@ -45,6 +50,9 @@ public class CropActivity extends AppCompatActivity {
     private Stack<Bitmap> redoStack = new Stack<>();
     private Path currentPath;
     private Paint pathPaint;
+    private boolean isPath;
+    private String imagePath;
+    private Uri imageUri;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -54,13 +62,18 @@ public class CropActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] != PERMISSION_GRANTED) {
                     Toast.makeText(this, "Read permission is required!", Toast.LENGTH_LONG).show();
                 } else {
-                    GetImagePath();
+                    try {
+                        GetOriginalImage();
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 break;
             default:
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +85,11 @@ public class CropActivity extends AppCompatActivity {
         ImageButton RedoButton = findViewById(R.id.redo_image_button);
         ImageButton NextButton = findViewById(R.id.next_image_button);
 
-        GetImagePath();
+        try {
+            GetOriginalImage();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         currentImage = originalImage.copy(originalImage.getConfig(), true);
 
         if (originalImage != null) {
@@ -122,6 +139,13 @@ public class CropActivity extends AppCompatActivity {
             if (croppedImageFile != null) {
                 Intent calculateIntent = new Intent(this, Calculate.class);
                 calculateIntent.putExtra("cropped_image_path", croppedImageFile.getAbsolutePath());
+
+                calculateIntent.putExtra("isPath", isPath);
+                if (isPath) {
+                    calculateIntent.putExtra("original_image_path", imagePath);
+                } else {
+                    calculateIntent.putExtra("original_image_uri", imageUri);
+                }
                 startService(calculateIntent);
             }
         });
@@ -209,22 +233,33 @@ public class CropActivity extends AppCompatActivity {
         }
     }
 
-    private void GetImagePath() {
+    private void GetOriginalImage() throws FileNotFoundException {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
             return;
         }
 
         Intent intent = getIntent();
-        String imagePath = intent.getStringExtra("image_path");
-        if (imagePath != null) {
-            originalImage = BitmapFactory.decodeFile(imagePath);
+        isPath = intent.getBooleanExtra("isPath", true);
+
+        if (isPath) {
+            imagePath = intent.getStringExtra("image_path");
+            if (imagePath != null) {
+                originalImage = BitmapFactory.decodeFile(imagePath);
+            }
+        } else {
+            imageUri = Uri.parse(intent.getStringExtra("image_uri"));
+            if (imageUri != null) {
+                InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                originalImage = BitmapFactory.decodeStream(inputStream);
+            }
         }
     }
 
     private File saveBitmapToFile(Bitmap bitmap) {
         try {
             File outputDir = getCacheDir();
+            Log.i("myLog", outputDir.toString());
             File outputFile = File.createTempFile("cropped_image", ".png", outputDir);
             try (FileOutputStream out = new FileOutputStream(outputFile)) {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);

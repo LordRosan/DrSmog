@@ -218,7 +218,6 @@ public class CamActivity extends AppCompatActivity {
                             intent.putExtra("isPath", true);
                             intent.putExtra("image_path", imagePath);
                             startActivity(intent);
-                            finish();
                         }
                     }
                 };
@@ -398,7 +397,6 @@ public class CamActivity extends AppCompatActivity {
             intent.putExtra("isPath", false);
             intent.putExtra("image_uri", selectedImageUri.toString());
             startActivity(intent);
-            finish();
         }
     }
 }

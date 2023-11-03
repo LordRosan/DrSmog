@@ -1,8 +1,13 @@
 package com.jlu.drsmog;
 
+import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -54,6 +59,23 @@ public class ShowActivity extends AppCompatActivity {
     private ImageView iv1;
     String ShareText;
     Bitmap currentImage;
+    final int READ_REQUEST_CODE = 200;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case READ_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] != PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Read permission is required!", Toast.LENGTH_LONG).show();
+                } else {
+                    GetImage();
+                }
+                break;
+            default:
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,29 +88,11 @@ public class ShowActivity extends AppCompatActivity {
         iv1=findViewById(R.id.iv1);
         tv2=findViewById(R.id.tv2);
 
-        Intent intent = getIntent();
-        boolean isPath = intent.getBooleanExtra("isPath", true);
+        GetImage();
 
-        if (isPath) {
-            String imagePath = intent.getStringExtra("image_path");
-            if (imagePath != null) {
-                currentImage = BitmapFactory.decodeFile(imagePath);
-            }
-        } else {
-            Uri imageUri = Uri.parse(intent.getStringExtra("image_uri"));
-            if (imageUri != null) {
-                InputStream inputStream = null;
-                try {
-                    inputStream = getContentResolver().openInputStream(imageUri);
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-                currentImage = BitmapFactory.decodeStream(inputStream);
-            }
-        }
         // 显示裁剪后的图片在ImageView界面上
         iv1.setImageBitmap(currentImage);
-        float darkness = getIntent().getFloatExtra("dacker_value", 0); // 0为默认值
+        float darkness = getIntent().getFloatExtra("darkness_value", 0); // 0为默认值
         if(darkness==0)
             ShareText="全白 黑度值:"+darkness;
         if(darkness>0&&darkness<=51)
@@ -175,5 +179,33 @@ public class ShowActivity extends AppCompatActivity {
             shareIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
         }
         startActivity(Intent.createChooser(shareIntent, "分享到"));
+    }
+
+    private void GetImage() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
+            return;
+        }
+
+        Intent intent = getIntent();
+        boolean isPath = intent.getBooleanExtra("isPath", false);
+
+        if (isPath) {
+            String imagePath = intent.getStringExtra("original_image_path");
+            if (imagePath != null) {
+                currentImage = BitmapFactory.decodeFile(imagePath);
+            }
+        } else {
+            Uri imageUri = Uri.parse(intent.getStringExtra("original_image_uri"));
+            if (imageUri != null) {
+                InputStream inputStream = null;
+                try {
+                    inputStream = getContentResolver().openInputStream(imageUri);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                currentImage = BitmapFactory.decodeStream(inputStream);
+            }
+        }
     }
 }
