@@ -33,8 +33,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class ShowActivity extends AppCompatActivity {
@@ -47,6 +49,7 @@ public class ShowActivity extends AppCompatActivity {
     private TextView tv2;
     private ImageView iv1;
     String ShareText;
+    Bitmap currentImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,27 +62,43 @@ public class ShowActivity extends AppCompatActivity {
         iv1=findViewById(R.id.iv1);
         tv2=findViewById(R.id.tv2);
 
-        // 获取传递过来的裁剪后的图片
-        Bitmap croppedImage = getIntent().getParcelableExtra("croppedImage");
+        Intent intent = getIntent();
+        boolean isPath = intent.getBooleanExtra("isPath", true);
+
+        if (isPath) {
+            String imagePath = intent.getStringExtra("image_path");
+            if (imagePath != null) {
+                currentImage = BitmapFactory.decodeFile(imagePath);
+            }
+        } else {
+            Uri imageUri = Uri.parse(intent.getStringExtra("image_uri"));
+            if (imageUri != null) {
+                InputStream inputStream = null;
+                try {
+                    inputStream = getContentResolver().openInputStream(imageUri);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                currentImage = BitmapFactory.decodeStream(inputStream);
+            }
+        }
         // 显示裁剪后的图片在ImageView界面上
-        iv1.setImageBitmap(croppedImage);
-        ShareText="乌卡拉卡 小魔仙全身变！";
+        iv1.setImageBitmap(currentImage);
         float darkness = getIntent().getFloatExtra("dacker_value", 0); // 0为默认值
         if(darkness==0)
             ShareText="全白 黑度值:"+darkness;
-        if(darkness>0&&darkness<=0.2)
+        if(darkness>0&&darkness<=51)
             ShareText="微灰 黑度值:"+darkness;
-        if(darkness>0.2&&darkness<=0.4)
+        if(darkness>51&&darkness<=102)
             ShareText="灰 黑度值:"+darkness;
-        if(darkness>0.4&&darkness<=0.6)
+        if(darkness>102&&darkness<=153)
             ShareText="深灰 黑度值:"+darkness;
-        if(darkness>0.6&&darkness<=0.8)
-            ShareText="黑 黑度值:"+darkness;
-        if(darkness==1)
+        if(darkness>153&&darkness<=204)
+            ShareText="灰黑 黑度值:"+darkness;
+        if(darkness>204&&darkness<=255)
             ShareText="全黑 黑度值:"+darkness;
-        String darknessText = "Darkness Level: " + darkness;
+        String darknessLevel = "Darkness Level: " + darkness;
         tv2.setText(ShareText);
-        // ... (使用dacker值的代码)
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +156,7 @@ public class ShowActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //initPopWindow(v);
-                shareContent(ShareText,croppedImage);
+                shareContent(ShareText,currentImage);
             }
         });
     }
