@@ -20,46 +20,47 @@ public class Calculate extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-    private Bitmap croppedImage;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // 在这里执行图像处理和灰度直方图计算的逻辑
+        // 接收传递过来的图像路径
+        String croppedImagePath = intent.getStringExtra("cropped_image_path");
 
-        // 加载图像
-        croppedImage = intent.getParcelableExtra("image");
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image);
+        if (croppedImagePath != null) {
+            // 根据路径加载图像
+            Bitmap bitmap = BitmapFactory.decodeFile(croppedImagePath);
 
-        // 获取图像的宽度和高度
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
+            if (bitmap != null) {
+                // 计算灰度直方图
+                int width = bitmap.getWidth();
+                int height = bitmap.getHeight();
 
-        // 初始化灰度直方图数组
-        int[] histogram = new int[256]; // 0-255个灰度级别
+                // 初始化灰度直方图数组
+                int[] histogram = new int[256];
 
-        // 遍历图像像素，统计灰度直方图
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int pixel = bitmap.getPixel(x, y);
-                int red = (pixel >> 16) & 0xFF; // 提取红色通道作为灰度值
-                histogram[red]++;
+                // 遍历图像像素
+                for (int y = 0; y < height; y++) {
+                    for (int x = 0; x < width; x++) {
+                        int pixel = bitmap.getPixel(x, y);
+                        int red = (pixel >> 16) & 0xFF;
+                        histogram[red]++;
+                    }
+                }
+
+                float darkness = 0;
+                for (int i = 0; i < 256; i++) {
+                    darkness += histogram[i];
+                }
+                darkness /= width * height; // 计算平均灰度值
+
+                // 创建Intent启动ShowActivity，并传递计算结果
+                Intent showIntent = new Intent(this, ShowActivity.class);
+                showIntent.putExtra("darkness_value", darkness);
+                showIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(showIntent);
             }
         }
-        float darkness= 0;
-        for (int i = 0; i < 256; i++) {
-            darkness += histogram[i];
-        }
-        darkness /= width*height; // 算出平均值
-
-        // 创建一个新的Intent来启动ShowActivity
-        Intent showIntent = new Intent(this, ShowActivity.class);
-        // 将计算出的dacker作为extra传递给ShowActivity
-        showIntent.putExtra("dacker_value", darkness);
-
-        // 由于服务中不能直接启动Activity，需要添加FLAG_ACTIVITY_NEW_TASK标志
-        showIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        // 启动ShowActivity
-        startActivity(showIntent);
-
-        return super.onStartCommand(intent, flags, startId);
+        // 如果我们超出工作，不需要重新启动
+        return START_NOT_STICKY;
     }
 }

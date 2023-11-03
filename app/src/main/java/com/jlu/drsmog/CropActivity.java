@@ -21,7 +21,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -31,9 +30,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Stack;
 
 public class CropActivity extends AppCompatActivity {
@@ -55,11 +54,7 @@ public class CropActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] != PERMISSION_GRANTED) {
                     Toast.makeText(this, "Read permission is required!", Toast.LENGTH_LONG).show();
                 } else {
-                    try {
-                        GetOriginalImage();
-                    } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
+                    GetImagePath();
                 }
                 break;
             default:
@@ -77,11 +72,7 @@ public class CropActivity extends AppCompatActivity {
         ImageButton RedoButton = findViewById(R.id.redo_image_button);
         ImageButton NextButton = findViewById(R.id.next_image_button);
 
-        try {
-            GetOriginalImage();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        GetImagePath();
         currentImage = originalImage.copy(originalImage.getConfig(), true);
 
         if (originalImage != null) {
@@ -89,6 +80,8 @@ public class CropActivity extends AppCompatActivity {
             imageView.setImageBitmap(currentImage);  // 确保将Bitmap设置到ImageView中
         } else {
             Toast.makeText(this, "无法加载图像", Toast.LENGTH_SHORT).show();
+            Intent intent_back = new Intent(CropActivity.this, CamActivity.class);
+            startActivity(intent_back);
             finish();  // 关闭当前的Activity
         }
 
@@ -125,9 +118,12 @@ public class CropActivity extends AppCompatActivity {
 
         //下一步按钮的具体实现
         NextButton.setOnClickListener(v -> {
-            Intent intent_next = new Intent(CropActivity.this, ShowActivity.class);
-            intent_next.putExtra("cropped_image", currentImage);
-            startActivity(intent_next);
+            File croppedImageFile = saveBitmapToFile(currentImage);
+            if (croppedImageFile != null) {
+                Intent calculateIntent = new Intent(this, Calculate.class);
+                calculateIntent.putExtra("cropped_image_path", croppedImageFile.getAbsolutePath());
+                startService(calculateIntent);
+            }
         });
 
         //自由裁切的具体实现
@@ -209,34 +205,34 @@ public class CropActivity extends AppCompatActivity {
             redoStack.clear();
             currentImage = resultBitmap;
             imageView.setImageBitmap(currentImage);
-
-            // 裁剪后的图片处理完毕，将其传递给另一个Activity
-            Intent intent = new Intent(CropActivity.this, ShowActivity.class);
-            intent.putExtra("croppedImage", currentImage);
-            startActivity(intent);
         }
     }
 
-    private void GetOriginalImage() throws FileNotFoundException {
+    private void GetImagePath() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
             return;
         }
 
         Intent intent = getIntent();
-        boolean isPath = intent.getBooleanExtra("isPath", true);
-
-        if (isPath) {
-            String imagePath = intent.getStringExtra("image_path");
-            if (imagePath != null) {
-                originalImage = BitmapFactory.decodeFile(imagePath);
-            }
-        } else {
-            Uri imageUri = Uri.parse(intent.getStringExtra("image_uri"));
-            if (imageUri != null) {
-                InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                originalImage = BitmapFactory.decodeStream(inputStream);
-            }
+        String imagePath = intent.getStringExtra("image_path");
+        if (imagePath != null) {
+            originalImage = BitmapFactory.decodeFile(imagePath);
         }
     }
+
+    private File saveBitmapToFile(Bitmap bitmap) {
+        try {
+            File outputDir = getCacheDir();
+            File outputFile = File.createTempFile("cropped_image", ".png", outputDir);
+            try (FileOutputStream out = new FileOutputStream(outputFile)) {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            }
+            return outputFile;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
