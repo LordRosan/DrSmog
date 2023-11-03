@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AboutActivity">
+    tools:context=".AboutActivity"
+    android:background="@drawable/page_gradient">
 
     <ImageButton
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:id="@+id/btn_back"
         android:src="@drawable/ic_action_back"
         android:background="@drawable/back_button_shape"
@@ -25,11 +26,14 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="OURTEAM"
+        android:text="OURTEAM！"
+        android:textStyle="bold|italic"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_back" />
-
+        app:layout_constraintTop_toBottomOf="@id/btn_back"
+        android:textSize="74sp"
+        android:paddingBottom="30dp"
+        />
 
     <TableLayout
         android:layout_width="match_parent"
@@ -43,13 +47,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="姓名（按姓氏拼音排序）" />
+                android:text="姓名\n(按姓氏拼音排序）"
+                android:textSize="20sp"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="学号" />
+                android:text="学号"
+                android:textSize="20sp"
+                android:gravity="center_vertical"/>
         </TableRow>
 
         <TableRow>
@@ -57,12 +64,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 android:text="艾孜买提·艾尼瓦尔" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 android:text="21210534" />
         </TableRow>
 
@@ -71,12 +80,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 android:text="邓肯" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 android:text="21211113" />
         </TableRow>
 
@@ -85,12 +96,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 android:text="黄一桐" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 android:text="21210413" />
         </TableRow>
 
@@ -99,12 +112,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 android:text="贾博皓" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 android:text="21210231" />
         </TableRow>
 
@@ -113,12 +128,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 android:text="周默予" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 android:text="21210421" />
         </TableRow>
 
@@ -127,12 +144,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 android:text="周子尧" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 android:text="21210109" />
         </TableRow>
     </TableLayout>

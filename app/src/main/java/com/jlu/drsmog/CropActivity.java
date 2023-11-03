@@ -1,11 +1,17 @@
 package com.jlu.drsmog;
 
-import androidx.appcompat.app.AppCompatActivity;
+import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import android.Manifest;
 import android.animation.AnimatorInflater;
 import android.animation.StateListAnimator;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -24,9 +30,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.Stack;
 
 public class CropActivity extends AppCompatActivity {
+
+    final int READ_REQUEST_CODE = 200;
     private ImageView imageView;
     private Bitmap originalImage;
     private Bitmap currentImage;
@@ -35,6 +44,20 @@ public class CropActivity extends AppCompatActivity {
     private Path currentPath;
     private Paint pathPaint;
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case READ_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] != PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Read permission is required!", Toast.LENGTH_LONG).show();
+                } else {
+                    GetImagePath();
+                }
+                break;
+            default:
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +70,9 @@ public class CropActivity extends AppCompatActivity {
         ImageButton RedoButton = findViewById(R.id.redo_image_button);
         ImageButton NextButton = findViewById(R.id.next_image_button);
 
-        //获取从CamActivity传递进来的图片
-        //originalImage = getIntent().getParcelableExtra("image");
-
-        originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.image);
+        GetImagePath();
         currentImage = originalImage.copy(originalImage.getConfig(), true);
+
         if (originalImage != null) {
             currentImage = originalImage.copy(originalImage.getConfig(), true);
             imageView.setImageBitmap(currentImage);  // 确保将Bitmap设置到ImageView中
@@ -68,8 +89,8 @@ public class CropActivity extends AppCompatActivity {
 
         //返回按钮的具体实现
         BackButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CropActivity.this, CamActivity.class);
-            startActivity(intent);
+            Intent intent_back = new Intent(CropActivity.this, CamActivity.class);
+            startActivity(intent_back);
             finish();
         });
 
@@ -93,9 +114,9 @@ public class CropActivity extends AppCompatActivity {
 
         //下一步按钮的具体实现
         NextButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CropActivity.this, ShowActivity.class);
-            intent.putExtra("cropped_image", currentImage);
-            startActivity(intent);
+            Intent intent_next = new Intent(CropActivity.this, ShowActivity.class);
+            intent_next.putExtra("cropped_image", currentImage);
+            startActivity(intent_next);
         });
 
         //自由裁切的具体实现
@@ -182,6 +203,19 @@ public class CropActivity extends AppCompatActivity {
             Intent intent = new Intent(CropActivity.this, ShowActivity.class);
             intent.putExtra("croppedImage", currentImage);
             startActivity(intent);
+        }
+    }
+
+    private void GetImagePath() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
+            return;
+        }
+
+        Intent intent = getIntent();
+        String imagePath = intent.getStringExtra("image_path");
+        if (imagePath != null) {
+            originalImage = BitmapFactory.decodeFile(imagePath);
         }
     }
 }
