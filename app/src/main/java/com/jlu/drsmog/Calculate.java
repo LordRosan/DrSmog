@@ -53,7 +53,7 @@ public class Calculate extends Service {
         // 创建一个新的Intent来启动ShowActivity
         Intent showIntent = new Intent(this, ShowActivity.class);
         // 将计算出的dacker作为extra传递给ShowActivity
-        showIntent.putExtra("dacker_value", dacker);
+        showIntent.putExtra("dacker_value", darkness);
 
         // 由于服务中不能直接启动Activity，需要添加FLAG_ACTIVITY_NEW_TASK标志
         showIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
