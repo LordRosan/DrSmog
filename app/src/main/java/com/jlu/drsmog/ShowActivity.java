@@ -164,6 +164,7 @@ public class ShowActivity extends AppCompatActivity {
             }
         });
 
+
         btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
