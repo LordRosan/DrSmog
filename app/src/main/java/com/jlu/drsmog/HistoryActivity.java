@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+
 public class HistoryActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -47,10 +48,10 @@ public class HistoryActivity extends AppCompatActivity {
                 finish();
             }
         });
-        // 初始化数据库
-        dbHelper = new DatabaseHelper(this);
+
+        dbHelper = DatabaseHelper.getInstance(this);
         // 插入测试数据
-        dbHelper.addData("2023-10-28 12:00:00", "SomeBlacknessValue", "/some/path/to/data");
+        // dbHelper.addData("2023-10-28 12:00:00", "SomeBlacknessValue", "/some/path/to/data");
         // 初始化 RecyclerView
         recyclerView = findViewById(R.id.recyclerView_history);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

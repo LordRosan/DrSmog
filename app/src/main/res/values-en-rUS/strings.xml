@@ -6,4 +6,5 @@
     <string name="dialog_select_image_src">Select Image Source</string>
     <string name="opt_gallery">Gallery</string>
     <string name="opt_file_manager">File Manager</string>
+    <string name="save_success">Save Success</string>
 </resources>
