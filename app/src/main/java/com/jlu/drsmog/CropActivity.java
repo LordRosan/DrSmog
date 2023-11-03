@@ -23,6 +23,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -224,6 +225,7 @@ public class CropActivity extends AppCompatActivity {
     private File saveBitmapToFile(Bitmap bitmap) {
         try {
             File outputDir = getCacheDir();
+            Log.i("myLog", outputDir.toString());
             File outputFile = File.createTempFile("cropped_image", ".png", outputDir);
             try (FileOutputStream out = new FileOutputStream(outputFile)) {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);

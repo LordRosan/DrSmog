@@ -64,7 +64,7 @@ public class ShowActivity extends AppCompatActivity {
         // 显示裁剪后的图片在ImageView界面上
         iv1.setImageBitmap(croppedImage);
         ShareText="乌卡拉卡 小魔仙全身变！";
-        float darkness = getIntent().getFloatExtra("dacker_value", 0); // 0为默认值
+        float darkness = getIntent().getFloatExtra("darkness_value", 0); // 0为默认值
         if(darkness==0)
             ShareText="全白 黑度值:"+darkness;
         if(darkness>0&&darkness<=0.2)

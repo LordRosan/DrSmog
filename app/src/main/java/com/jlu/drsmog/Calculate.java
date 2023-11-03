@@ -11,6 +11,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.content.Intent;
+import android.util.Log;
+import android.widget.Toast;
 
 public class Calculate extends Service {
     public Calculate() {
@@ -25,7 +27,6 @@ public class Calculate extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 接收传递过来的图像路径
         String croppedImagePath = intent.getStringExtra("cropped_image_path");
-
         if (croppedImagePath != null) {
             // 根据路径加载图像
             Bitmap bitmap = BitmapFactory.decodeFile(croppedImagePath);
@@ -49,9 +50,14 @@ public class Calculate extends Service {
 
                 float darkness = 0;
                 for (int i = 0; i < 256; i++) {
-                    darkness += histogram[i];
+                    darkness += histogram[i] * i;
+                    Log.i("HISTOGRAM", "histogram[" + i + "] = " + histogram[i]);
                 }
-                darkness /= width * height; // 计算平均灰度值
+                darkness /= (float)width * (float)height; // 计算平均灰度值
+
+                Log.i("DARKNESS", "darkness" + darkness);
+                Log.i("DARKNESS", "width" + width);
+                Log.i("DARKNESS", "height" + height);
 
                 // 创建Intent启动ShowActivity，并传递计算结果
                 Intent showIntent = new Intent(this, ShowActivity.class);
