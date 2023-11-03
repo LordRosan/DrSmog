@@ -22,6 +22,12 @@
         android:theme="@style/Theme.DrSmog"
         android:requestLegacyExternalStorage="true"
         tools:targetApi="34">
+        <service
+            android:name=".Calculate"
+            android:enabled="true"
+            android:exported="true"></service>
+
+
         <activity
             android:name=".AboutActivity"
             android:exported="false" />
@@ -29,7 +35,7 @@
             android:name=".CamActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".HistoryActivity"
             android:exported="false" />
         <activity
             android:name=".CropActivity"
@@ -38,7 +44,7 @@
             android:name=".ShowActivity"
             android:exported="false" />
         <activity
-            android:name=".HistoryActivity"
+            android:name=".MainActivity"
             android:hardwareAccelerated="true"
             android:exported="true">
             <intent-filter>
