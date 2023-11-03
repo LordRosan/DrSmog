@@ -162,8 +162,9 @@ public class ShowActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String fileName = editText.getText().toString();
+                                Toast.makeText(ShowActivity.this, fileName, Toast.LENGTH_SHORT).show();
                                 // 将文件保存在设备上
-                                dbHelper.addData(currentTime, String.valueOf(darkness), imagePath);
+                                dbHelper.addData(currentTime, String.valueOf(darkness), imagePath, fileName);
                                 Toast.makeText(ShowActivity.this, getString(R.string.save_success), Toast.LENGTH_SHORT).show();
                             }
                         })
@@ -171,7 +172,6 @@ public class ShowActivity extends AppCompatActivity {
                         .show();
             }
         });
-
 
         btn_share.setOnClickListener(new View.OnClickListener() {
             @Override

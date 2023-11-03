@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (id INTEGER PRIMARY KEY, time TEXT, blackness TEXT, path TEXT)";
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (id INTEGER PRIMARY KEY, time TEXT, blackness TEXT, path TEXT, name TEXT)";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -43,12 +43,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return instance;
     }
 
-    public void addData(String time, String blackness, String path) {
+    public void addData(String time, String blackness, String path, String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("time", time);
         values.put("blackness", blackness);
         values.put("path", path);
+        values.put("name",name);
         db.insert(TABLE_NAME, null, values);
         db.close();
     }
@@ -64,7 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Log.d("DatabaseHelper", "Database opened for reading."); // 日志输出打开数据库
 
-        Cursor cursor = db.query(TABLE_NAME, new String[]{"id", "time", "blackness", "path"}, null, null, null, null, null);
+        Cursor cursor = db.query(TABLE_NAME, new String[]{"id", "time", "blackness", "path", "name"}, null, null, null, null, null);
         Log.d("DatabaseHelper", "Query executed."); // 日志输出执行查询
 
         if (cursor.moveToFirst()) {
@@ -73,9 +74,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String time = cursor.getString(cursor.getColumnIndexOrThrow("time"));
                 String blackness = cursor.getString(cursor.getColumnIndexOrThrow("blackness"));
                 String path = cursor.getString(cursor.getColumnIndexOrThrow("path"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
 
                 // 创建新的 Record 对象并加入到 list 中
-                Record record = new Record(id, time, blackness, path);
+                Record record = new Record(id, time, blackness, path, name);
                 recordsList.add(record);
 
                 Log.d("DatabaseHelper", "Record added: " + record.toString()); // 日志输出每条记录
