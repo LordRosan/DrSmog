@@ -146,6 +146,7 @@ public class ShowActivity extends AppCompatActivity {
             }
         });
 
+
         btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,7 +158,6 @@ public class ShowActivity extends AppCompatActivity {
     private void shareContent(String shareText, Bitmap shareImageBitmap) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("image/*");
-        shareIntent.putExtra("Kdescription", shareText);
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareText); // 设置分享的主题或标题
         if (shareImageBitmap != null) {
             String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), shareImageBitmap, "ShareImage", null);
