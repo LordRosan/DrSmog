@@ -26,7 +26,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/btn_more"
-        android:src="@drawable/ic_action_more"
+        android:src="@drawable/ic_action_share"
         android:background="@drawable/back_button_shape"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
