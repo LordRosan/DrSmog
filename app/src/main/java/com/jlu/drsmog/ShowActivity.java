@@ -37,6 +37,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jlu.drsmog.database.DatabaseHelper;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -60,6 +62,10 @@ public class ShowActivity extends AppCompatActivity {
     String ShareText;
     Bitmap currentImage;
     final int READ_REQUEST_CODE = 200;
+
+    boolean isPath;
+    String imagePath;
+    Uri imageUri;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -128,35 +134,15 @@ public class ShowActivity extends AppCompatActivity {
         btn_store.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 检查SD卡是否可用
-                if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                    // 获取SD卡的根目录
-                    File sdCardDir = Environment.getExternalStorageDirectory();
-                    // 创建一个名为"my_images"的子目录
-                    File myDir = new File(sdCardDir, "my_images");
-                    if (!myDir.exists()) {
-                        myDir.mkdirs();
-                    }
-                    // 创建一个名为"my_image.jpg"的文件
-                    File file = new File(myDir, "my_image.jpg");
-                    try {
-                        // 创建一个输出流，将图片数据写入文件
-                        FileOutputStream fos = new FileOutputStream(file);
-                        Bitmap bitmap = null;
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                        fos.flush();
-                        fos.close();
-                        // 写入成功，提示用户
-                        Toast.makeText(ShowActivity.this, "图片已保存至SD卡", Toast.LENGTH_SHORT).show();
-                    } catch (IOException e) {
-                        // 写入失败，提示用户
-                        Toast.makeText(ShowActivity.this, "图片保存失败", Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                    }
-                } else {
-                    // SD卡不可用，提示用户
-                    Toast.makeText(ShowActivity.this, "SD卡不可用", Toast.LENGTH_SHORT).show();
+                DatabaseHelper dbHelper = DatabaseHelper.getInstance(ShowActivity.this);
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                String currentTime = dateFormat.format(calendar.getTime());
+                if (!isPath) {
+                    imagePath = imageUri.toString();
                 }
+                dbHelper.addData(currentTime, String.valueOf(darkness), imagePath);
+                Toast.makeText(ShowActivity.this, getString(R.string.save_success), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -188,15 +174,14 @@ public class ShowActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        boolean isPath = intent.getBooleanExtra("isPath", false);
+        isPath = intent.getBooleanExtra("isPath", false);
 
-        if (isPath) {
-            String imagePath = intent.getStringExtra("original_image_path");
+        if (isPath) {imagePath = intent.getStringExtra("original_image_path");
             if (imagePath != null) {
                 currentImage = BitmapFactory.decodeFile(imagePath);
             }
         } else {
-            Uri imageUri = Uri.parse(intent.getStringExtra("original_image_uri"));
+            imageUri = Uri.parse(intent.getStringExtra("original_image_uri"));
             if (imageUri != null) {
                 InputStream inputStream = null;
                 try {
