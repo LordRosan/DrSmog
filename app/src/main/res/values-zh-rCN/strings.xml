@@ -3,4 +3,7 @@
     <string name="btn_back">返回</string>
     <string name="btn_load_photo">导入图片</string>
     <string name="btn_capture">拍摄</string>
+    <string name="dialog_select_image_src">选择图片来源</string>
+    <string name="opt_gallery">图库</string>
+    <string name="opt_file_manager">文件管理器</string>
 </resources>

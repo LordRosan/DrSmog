@@ -3,4 +3,7 @@
     <string name="btn_load_photo">Import Image</string>
     <string name="btn_capture">Capture</string>
     <string name="btn_back">Back</string>
+    <string name="dialog_select_image_src">Select Image Source</string>
+    <string name="opt_gallery">Gallery</string>
+    <string name="opt_file_manager">File Manager</string>
 </resources>
