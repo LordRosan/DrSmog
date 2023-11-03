@@ -9,7 +9,9 @@ import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -26,11 +28,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -44,6 +50,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import java.text.SimpleDateFormat;
@@ -99,19 +106,23 @@ public class ShowActivity extends AppCompatActivity {
         // 显示裁剪后的图片在ImageView界面上
         iv1.setImageBitmap(currentImage);
         float darkness = getIntent().getFloatExtra("darkness_value", 0); // 0为默认值
+        float total = 255;
+        float result = darkness / total;
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.####");
+        String formattedResult = decimalFormat.format(result);
         if(darkness==0)
-            ShareText="全白 黑度值:"+darkness;
+            ShareText="全白 黑度值:"+formattedResult+" (0级)";
         if(darkness>0&&darkness<=51)
-            ShareText="微灰 黑度值:"+darkness;
+            ShareText="微灰 黑度值:"+formattedResult+" (1级)";
         if(darkness>51&&darkness<=102)
-            ShareText="灰 黑度值:"+darkness;
+            ShareText="灰 黑度值:"+formattedResult+" (2级)";
         if(darkness>102&&darkness<=153)
-            ShareText="深灰 黑度值:"+darkness;
+            ShareText="深灰 黑度值:"+formattedResult+" (3级)";
         if(darkness>153&&darkness<=204)
-            ShareText="灰黑 黑度值:"+darkness;
+            ShareText="灰黑 黑度值:"+formattedResult+" (4级)";
         if(darkness>204&&darkness<=255)
-            ShareText="全黑 黑度值:"+darkness;
-        String darknessLevel = "Darkness Level: " + darkness;
+            ShareText="全黑 黑度值:"+formattedResult+" (5级)";
         tv2.setText(ShareText);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,10 +152,26 @@ public class ShowActivity extends AppCompatActivity {
                 if (!isPath) {
                     imagePath = imageUri.toString();
                 }
-                dbHelper.addData(currentTime, String.valueOf(darkness), imagePath);
-                Toast.makeText(ShowActivity.this, getString(R.string.save_success), Toast.LENGTH_SHORT).show();
+
+                // 弹出对话框，让用户输入保存文件的名称
+                final EditText editText = new EditText(ShowActivity.this);
+                new AlertDialog.Builder(ShowActivity.this)
+                        .setTitle(R.string.save_dialog_title)
+                        .setView(editText)
+                        .setPositiveButton(R.string.save_dialog_confirm, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String fileName = editText.getText().toString();
+                                // 将文件保存在设备上
+                                dbHelper.addData(currentTime, String.valueOf(darkness), imagePath);
+                                Toast.makeText(ShowActivity.this, getString(R.string.save_success), Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton(R.string.save_dialog_cancel, null)
+                        .show();
             }
         });
+
 
         btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,7 +184,6 @@ public class ShowActivity extends AppCompatActivity {
     private void shareContent(String shareText, Bitmap shareImageBitmap) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("image/*");
-        shareIntent.putExtra("Kdescription", shareText);
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareText); // 设置分享的主题或标题
         if (shareImageBitmap != null) {
             String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), shareImageBitmap, "ShareImage", null);
