@@ -6,11 +6,14 @@ public class Record {
     private String blackness;
     private String path;
 
-    public Record(int id, String time, String blackness, String path) {
+    private String name;
+
+    public Record(int id, String time, String blackness, String path, String name) {
         this.id = id;
         this.time = time;
         this.blackness = blackness;
         this.path = path;
+        this.name =name;
     }
 
     // Getter methods
@@ -30,9 +33,13 @@ public class Record {
         return id;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
-        return "ID: " + id + ", Time: " + time + ", Blackness: " + blackness + ", Path: " + path;
+        return "ID: " + id + ", Time: " + time + ", Blackness: " + blackness + ", Path: " + path+", Name: " + name;
     }
 
     // Setter methods (如果需要的话)
