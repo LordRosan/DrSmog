@@ -3,26 +3,33 @@ package com.jlu.drsmog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -36,13 +43,43 @@ public class ShowActivity extends AppCompatActivity {
     private Context mContext;
     private Button btn_back;
     private Button btn_store;
-    private Context context;
-
+    private Button btn_home;
+    private TextView tv2;
+    private ImageView iv1;
+    String ShareText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
         btn_back=(Button)findViewById(R.id.btn_back);
+        btn_home=(Button)findViewById(R.id.btn_home);
+        mContext=ShowActivity.this;
+        btn_store=(Button)findViewById(R.id.btn_store);
+        btn_share=(Button) findViewById(R.id.btn_share);
+        iv1=findViewById(R.id.iv1);
+        tv2=findViewById(R.id.tv2);
+
+        // 获取传递过来的裁剪后的图片
+        Bitmap croppedImage = getIntent().getParcelableExtra("croppedImage");
+        // 显示裁剪后的图片在ImageView界面上
+        iv1.setImageBitmap(croppedImage);
+        ShareText="乌卡拉卡 小魔仙全身变！";
+        float darkness = getIntent().getFloatExtra("dacker_value", 0); // 0为默认值
+        if(darkness==0)
+            ShareText="全白 黑度值:"+darkness;
+        if(darkness>0&&darkness<=0.2)
+            ShareText="微灰 黑度值:"+darkness;
+        if(darkness>0.2&&darkness<=0.4)
+            ShareText="灰 黑度值:"+darkness;
+        if(darkness>0.4&&darkness<=0.6)
+            ShareText="深灰 黑度值:"+darkness;
+        if(darkness>0.6&&darkness<=0.8)
+            ShareText="黑 黑度值:"+darkness;
+        if(darkness==1)
+            ShareText="全黑 黑度值:"+darkness;
+        String darknessText = "Darkness Level: " + darkness;
+        tv2.setText(ShareText);
+        // ... (使用dacker值的代码)
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,122 +88,69 @@ public class ShowActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        btn_store=(Button)findViewById(R.id.btn_store);
+
+        btn_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ShowActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
         btn_store.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bitmap bitmap = generateImage(); // 生成要分享的图片
-
-                String fileName = "image.jpg"; // 图片文件名
-                FileOutputStream fos = null;
-                try {
-                    // 获取存储目录
-                    String folderPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Pictures";
-                    // 创建存储目录
-                    File folder = new File(folderPath);
-                    if (!folder.exists()) {
-                        folder.mkdirs();
+                // 检查SD卡是否可用
+                if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                    // 获取SD卡的根目录
+                    File sdCardDir = Environment.getExternalStorageDirectory();
+                    // 创建一个名为"my_images"的子目录
+                    File myDir = new File(sdCardDir, "my_images");
+                    if (!myDir.exists()) {
+                        myDir.mkdirs();
                     }
-                    // 创建图片文件
-                    File file = new File(folderPath, fileName);
-                    fos = new FileOutputStream(file);
-                    // 将Bitmap保存为JPEG格式图片
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    fos.flush();
-                    fos.close();
-
-                    // 通知系统图库更新
-                    MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, null, null);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (fos != null) {
-                        try {
-                            fos.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    // 创建一个名为"my_image.jpg"的文件
+                    File file = new File(myDir, "my_image.jpg");
+                    try {
+                        // 创建一个输出流，将图片数据写入文件
+                        FileOutputStream fos = new FileOutputStream(file);
+                        Bitmap bitmap = null;
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                        fos.flush();
+                        fos.close();
+                        // 写入成功，提示用户
+                        Toast.makeText(ShowActivity.this, "图片已保存至SD卡", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        // 写入失败，提示用户
+                        Toast.makeText(ShowActivity.this, "图片保存失败", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
                     }
+                } else {
+                    // SD卡不可用，提示用户
+                    Toast.makeText(ShowActivity.this, "SD卡不可用", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        mContext=ShowActivity.this;
-        btn_share=(Button) findViewById(R.id.btn_share);
         btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initPopWindow(v);
+                //initPopWindow(v);
+                shareContent(ShareText,croppedImage);
             }
         });
     }
-
-    private void initPopWindow(View v) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_popup, null, false);
-
-        Button btn_pyq = (Button) view.findViewById(R.id.btn_pyq);
-        Button btn_qq = (Button) view.findViewById(R.id.btn_qq);
-        Button btn_email = (Button) view.findViewById(R.id.btn_email);
-        //1.构造一个PopupWindow，参数依次是加载的View，宽高
-        final PopupWindow popWindow = new PopupWindow(view,
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-
-        popWindow.setAnimationStyle(R.drawable.ic_pop_bg);  //设置加载动画
-
-        //这些为了点击非PopupWindow区域，PopupWindow会消失的，如果没有下面的
-        //代码的话，你会发现，当你把PopupWindow显示出来了，无论你按多少次后退键
-        //PopupWindow并不会关闭，而且退不出程序，加上下述代码可以解决这个问题
-        popWindow.setTouchable(true);
-        popWindow.setTouchInterceptor(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return false;
-                // 这里如果返回true的话，touch事件将被拦截
-                // 拦截后 PopupWindow的onTouchEvent不被调用，这样点击外部区域无法dismiss
-            }
-        });
-        popWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));    //要为popWindow设置一个背景才有效
-
-
-        //设置popupWindow显示的位置，参数依次是参照View，x轴的偏移量，y轴的偏移量
-        popWindow.showAsDropDown(v,-300,10);
-
-        //设置popupWindow里的按钮的事件
-        btn_pyq.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //shareToPYQ();
-                popWindow.dismiss();
-            }
-        });
-        btn_qq.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //shareToQQ();
-                popWindow.dismiss();
-            }
-        });
-        btn_email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 调用邮件分享SDK的分享接口，将图片分享至邮箱
-                // 具体实现方式请参考邮件分享SDK的文档
-                //shareToEmail();
-                popWindow.dismiss();
-            }
-        });
-    }
-        private Bitmap generateImage() {
-            // 创建一个画布
-            Bitmap bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-
-            // 绘制图片内容
-            canvas.drawColor(Color.BLUE);
-            Paint paint = new Paint();
-            paint.setColor(Color.RED);
-            paint.setTextSize(50);
-            canvas.drawText("这是要分享的图片", 100, 250, paint);
-            return bitmap;
+    private void shareContent(String shareText, Bitmap shareImageBitmap) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("image/*");
+        shareIntent.putExtra("Kdescription", shareText);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText); // 设置分享的主题或标题
+        if (shareImageBitmap != null) {
+            String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), shareImageBitmap, "ShareImage", null);
+            Uri bitmapUri = Uri.parse(bitmapPath);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
         }
+        startActivity(Intent.createChooser(shareIntent, "分享到"));
+    }
 }

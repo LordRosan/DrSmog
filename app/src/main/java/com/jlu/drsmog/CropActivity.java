@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.animation.AnimatorInflater;
 import android.animation.StateListAnimator;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -197,6 +198,11 @@ public class CropActivity extends AppCompatActivity {
             redoStack.clear();
             currentImage = resultBitmap;
             imageView.setImageBitmap(currentImage);
+
+            // 裁剪后的图片处理完毕，将其传递给另一个Activity
+            Intent intent = new Intent(CropActivity.this, ShowActivity.class);
+            intent.putExtra("croppedImage", currentImage);
+            startActivity(intent);
         }
     }
 
