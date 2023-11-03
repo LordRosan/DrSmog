@@ -44,11 +44,11 @@ public class Calculate extends Service {
                 histogram[red]++;
             }
         }
-        float dacker = 0;
+        float darkness= 0;
         for (int i = 0; i < 256; i++) {
-            dacker += histogram[i];
+            darkness += histogram[i];
         }
-        dacker /= 256; // 算出平均值
+        darkness /= width*height; // 算出平均值
 
         // 创建一个新的Intent来启动ShowActivity
         Intent showIntent = new Intent(this, ShowActivity.class);
