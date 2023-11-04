@@ -35,7 +35,7 @@ public class Calculate extends Service {
         if (isPath) {
             originalImagePath = intent.getStringExtra("original_image_path");
         } else {
-            originalImageUri = Uri.parse(intent.getStringExtra("original_image_uri"));
+            originalImageUri = intent.getParcelableExtra("original_image_uri");
         }
 
         // 接收传递过来的图像路径

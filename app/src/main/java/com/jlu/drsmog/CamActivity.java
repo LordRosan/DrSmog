@@ -30,6 +30,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -45,9 +47,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class CamActivity extends AppCompatActivity {
 
@@ -172,7 +177,15 @@ public class CamActivity extends AppCompatActivity {
                 int rotation = getRotationCompensation(cameraId, this, getApplicationContext());
                 captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, rotation);
 
-                imagePath = Environment.getExternalStorageDirectory() + "/image.jpg";
+                long timestamp = System.currentTimeMillis();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                String formattedDateTime = simpleDateFormat.format(new Date(timestamp));
+
+                File folder = new File(Environment.getExternalStorageDirectory() + "/DrSmog");
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
+                imagePath = folder + "/image_" + formattedDateTime + ".jpg";
                 file = new File(imagePath);
 
                 ImageReader.OnImageAvailableListener readListener = new ImageReader.OnImageAvailableListener() {
@@ -213,12 +226,18 @@ public class CamActivity extends AppCompatActivity {
                     @Override
                     public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                         super.onCaptureCompleted(session, request, result);
-                        if (imagePath != null) {
-                            Intent intent = new Intent(CamActivity.this, CropActivity.class);
-                            intent.putExtra("isPath", true);
-                            intent.putExtra("image_path", imagePath);
-                            startActivity(intent);
-                        }
+                        int delayMillis = 1000; // 2000ms = 2s
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (imagePath != null) {
+                                    Intent intent = new Intent(CamActivity.this, CropActivity.class);
+                                    intent.putExtra("isPath", true);
+                                    intent.putExtra("image_path", imagePath);
+                                    startActivity(intent);
+                                }
+                            }
+                        }, delayMillis);
                     }
                 };
 
