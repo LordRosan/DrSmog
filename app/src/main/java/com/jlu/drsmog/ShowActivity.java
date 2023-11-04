@@ -163,7 +163,7 @@ public class ShowActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 String fileName = editText.getText().toString();
                                 // 将文件保存在设备上
-                                dbHelper.addData(currentTime, String.valueOf(darkness), imagePath, fileName);
+                                dbHelper.addData(currentTime, getString(R.string.data_darkness) + ": " + result, imagePath, fileName);
                                 Toast.makeText(ShowActivity.this, getString(R.string.save_success), Toast.LENGTH_SHORT).show();
                             }
                         })
