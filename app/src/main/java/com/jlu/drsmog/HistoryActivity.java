@@ -53,7 +53,14 @@ public class HistoryActivity extends AppCompatActivity {
         loadData();
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
-            public void onClick(View view, int position) {}
+            public void onClick(View view, int position) {
+                // 获取当前行的Record对象
+                Record record = records.get(position);
+                // 获取图片路径
+                String imagePath = record.getPath();
+                // 显示图片
+                showImageDialog(imagePath);
+            }
             @Override
             public void onLongClick(View view, int position) {
                 showDeleteDialog(position);
@@ -138,5 +145,30 @@ public class HistoryActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "分享截图失败", Toast.LENGTH_SHORT).show();
         }
+    }
+    private void showImageDialog(String imagePath) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_image, null);
+        ImageView imageView = dialogView.findViewById(R.id.dialog_imageview);
+
+        // Set the image on the ImageView
+        File imgFile = new File(imagePath);
+        if (imgFile.exists()) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            imageView.setImageBitmap(myBitmap);
+        } else {
+            Toast.makeText(this, "图片文件不存在", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        builder.setView(dialogView);
+        builder.setPositiveButton("关闭", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
