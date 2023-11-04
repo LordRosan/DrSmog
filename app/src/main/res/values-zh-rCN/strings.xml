@@ -13,4 +13,5 @@
     <string name="menu_history">历史信息</string>
     <string name="menu_start">开始检测</string>
     <string name="menu_about">关于</string>
+    <string name="data_darkness">黑度值</string>
 </resources>
