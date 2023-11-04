@@ -69,21 +69,7 @@ public class HistoryActivity extends AppCompatActivity {
                 takeScreenshotAndShare();
             }
         });
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                // 获取当前行的Record对象
-                Record record = records.get(position);
-                // 获取图片路径
-                String imagePath = record.getPath();
-                // 显示图片
-                showImageDialog(imagePath);
-            }
-            @Override
-            public void onLongClick(View view, int position) {
-                showDeleteDialog(position);
-            }
-        }));
+
     }
 
     private void loadData() {
@@ -106,14 +92,22 @@ public class HistoryActivity extends AppCompatActivity {
         builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss(); // 显式调用dismiss
                 Record record = records.get(position);
                 dbHelper.deleteData(record.getId());
                 loadData();
+                Log.d("HistoryActivity", "Item deleted and data reloaded");
             }
         });
-        builder.setNegativeButton("取消", null);
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel(); // 显式调用cancel
+            }
+        });
         builder.show();
     }
+
 
     private void takeScreenshotAndShare() {
         try {
