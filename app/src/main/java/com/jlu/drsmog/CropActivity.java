@@ -6,11 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
-import android.animation.AnimatorInflater;
-import android.animation.StateListAnimator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -27,8 +23,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -62,11 +56,7 @@ public class CropActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] != PERMISSION_GRANTED) {
                     Toast.makeText(this, "Read permission is required!", Toast.LENGTH_LONG).show();
                 } else {
-                    try {
-                        GetOriginalImage();
-                    } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
+                    GetImage();
                 }
                 break;
             default:
@@ -85,22 +75,7 @@ public class CropActivity extends AppCompatActivity {
         ImageButton RedoButton = findViewById(R.id.redo_image_button);
         ImageButton NextButton = findViewById(R.id.next_image_button);
 
-        try {
-            GetOriginalImage();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        currentImage = originalImage.copy(originalImage.getConfig(), true);
-
-        if (originalImage != null) {
-            currentImage = originalImage.copy(originalImage.getConfig(), true);
-            imageView.setImageBitmap(currentImage);  // 确保将Bitmap设置到ImageView中
-        } else {
-            Toast.makeText(this, "无法加载图像", Toast.LENGTH_SHORT).show();
-            Intent intent_back = new Intent(CropActivity.this, CamActivity.class);
-            startActivity(intent_back);
-            finish();  // 关闭当前的Activity
-        }
+        GetImage();
 
         pathPaint = new Paint();
         pathPaint.setAntiAlias(true);
@@ -137,7 +112,7 @@ public class CropActivity extends AppCompatActivity {
         NextButton.setOnClickListener(v -> {
             File croppedImageFile = saveBitmapToFile(currentImage);
             if (croppedImageFile != null) {
-                Intent calculateIntent = new Intent(this, Calculate.class);
+                Intent calculateIntent = new Intent(CropActivity.this, Calculate.class);
                 calculateIntent.putExtra("cropped_image_path", croppedImageFile.getAbsolutePath());
 
                 calculateIntent.putExtra("isPath", isPath);
@@ -152,14 +127,14 @@ public class CropActivity extends AppCompatActivity {
 
         //自由裁切的具体实现
         imageView.setOnTouchListener((v, event) -> {
-            float[] realCoords = getBitmapPositionInsideImageView(imageView, event);
+            float[] realCoordinates = getBitmapPositionInsideImageView(imageView, event);
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     currentPath = new Path();
-                    currentPath.moveTo(realCoords[0], realCoords[1]);
+                    currentPath.moveTo(realCoordinates[0], realCoordinates[1]);
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    currentPath.lineTo(realCoords[0], realCoords[1]);
+                    currentPath.lineTo(realCoordinates[0], realCoordinates[1]);
                     break;
                 case MotionEvent.ACTION_UP:
                     new ApplyCropTask().execute(currentPath);
@@ -174,10 +149,6 @@ public class CropActivity extends AppCompatActivity {
         float[] ret = new float[2];
         if (imageView == null || imageView.getDrawable() == null)
             return ret;
-
-        // Get image dimensions
-        int imageWidth = imageView.getDrawable().getIntrinsicWidth();
-        int imageHeight = imageView.getDrawable().getIntrinsicHeight();
 
         // Get image matrix values and place them in an array
         float[] f = new float[9];
@@ -233,9 +204,9 @@ public class CropActivity extends AppCompatActivity {
         }
     }
 
-    private void GetOriginalImage() throws FileNotFoundException {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
+    private void GetImage(){
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
             return;
         }
 
@@ -250,9 +221,24 @@ public class CropActivity extends AppCompatActivity {
         } else {
             imageUri = Uri.parse(intent.getStringExtra("image_uri"));
             if (imageUri != null) {
-                InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                InputStream inputStream = null;
+                try {
+                    inputStream = getContentResolver().openInputStream(imageUri);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
                 originalImage = BitmapFactory.decodeStream(inputStream);
             }
+        }
+
+        if (originalImage != null) {
+            currentImage = originalImage.copy(originalImage.getConfig(), true);
+            imageView.setImageBitmap(currentImage);  // 确保将Bitmap设置到ImageView中
+        } else {
+            Toast.makeText(this, "Cannot load image", Toast.LENGTH_SHORT).show();
+            Intent intent_back = new Intent(CropActivity.this, CamActivity.class);
+            startActivity(intent_back);
+            finish();  // 关闭当前的Activity
         }
     }
 
