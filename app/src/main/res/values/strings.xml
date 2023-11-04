@@ -10,4 +10,7 @@
     <string name="save_dialog_title">Save Image Name</string>
     <string name="save_dialog_confirm">Confirm</string>
     <string name="save_dialog_cancel">Cencel</string>
+    <string name="menu_start">Start</string>
+    <string name="menu_history">History</string>
+    <string name="menu_about">About</string>
 </resources>
