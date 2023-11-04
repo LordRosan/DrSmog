@@ -10,4 +10,7 @@
     <string name="save_dialog_title">保存文件名称</string>
     <string name="save_dialog_confirm">确认</string>
     <string name="save_dialog_cancel">取消</string>
+    <string name="menu_history">历史信息</string>
+    <string name="menu_start">开始检测</string>
+    <string name="menu_about">关于</string>
 </resources>
