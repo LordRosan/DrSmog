@@ -163,7 +163,7 @@ public class ShowActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 String fileName = editText.getText().toString();
                                 // 将文件保存在设备上
-                                dbHelper.addData(currentTime, String.valueOf(darkness), imagePath);
+                                dbHelper.addData(currentTime, getString(R.string.data_darkness) + ": " + result, imagePath, fileName);
                                 Toast.makeText(ShowActivity.this, getString(R.string.save_success), Toast.LENGTH_SHORT).show();
                             }
                         })
@@ -172,11 +172,10 @@ public class ShowActivity extends AppCompatActivity {
             }
         });
 
-
         btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //initPopWindow(v);
+                // initPopWindow(v);
                 shareContent(ShareText,currentImage);
             }
         });
@@ -207,7 +206,7 @@ public class ShowActivity extends AppCompatActivity {
                 currentImage = BitmapFactory.decodeFile(imagePath);
             }
         } else {
-            imageUri = Uri.parse(intent.getStringExtra("original_image_uri"));
+            imageUri = intent.getParcelableExtra("original_image_uri");
             if (imageUri != null) {
                 InputStream inputStream = null;
                 try {

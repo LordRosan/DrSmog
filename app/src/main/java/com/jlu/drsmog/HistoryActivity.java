@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -22,12 +24,10 @@ import com.jlu.drsmog.adapters.Record;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 
 public class HistoryActivity extends AppCompatActivity {
-
     private RecyclerView recyclerView;
     private DatabaseHelper dbHelper;
     private HistoryAdapter adapter;
@@ -37,7 +37,6 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-
         ImageButton imageButton = findViewById(R.id.btn_back);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,24 +47,25 @@ public class HistoryActivity extends AppCompatActivity {
                 finish();
             }
         });
-
         dbHelper = DatabaseHelper.getInstance(this);
-        // 插入测试数据
-        // dbHelper.addData("2023-10-28 12:00:00", "SomeBlacknessValue", "/some/path/to/data");
-        // 初始化 RecyclerView
         recyclerView = findViewById(R.id.recyclerView_history);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         loadData();
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
-            public void onClick(View view, int position) {}
-
+            public void onClick(View view, int position) {
+                // 获取当前行的Record对象
+                Record record = records.get(position);
+                // 获取图片路径
+                String imagePath = record.getPath();
+                // 显示图片
+                showImageDialog(imagePath);
+            }
             @Override
             public void onLongClick(View view, int position) {
                 showDeleteDialog(position);
             }
         }));
-
         ImageButton shareButton = findViewById(R.id.btn_more);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +74,7 @@ public class HistoryActivity extends AppCompatActivity {
                 takeScreenshotAndShare();
             }
         });
+
     }
 
     private void loadData() {
@@ -96,14 +97,22 @@ public class HistoryActivity extends AppCompatActivity {
         builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss(); // 显式调用dismiss
                 Record record = records.get(position);
                 dbHelper.deleteData(record.getId());
                 loadData();
+                Log.d("HistoryActivity", "Item deleted and data reloaded");
             }
         });
-        builder.setNegativeButton("取消", null);
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel(); // 显式调用cancel
+            }
+        });
         builder.show();
     }
+
 
     private void takeScreenshotAndShare() {
         try {
@@ -137,5 +146,29 @@ public class HistoryActivity extends AppCompatActivity {
             Toast.makeText(this, "分享截图失败", Toast.LENGTH_SHORT).show();
         }
     }
+    private void showImageDialog(String imagePath) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_image, null);
+        ImageView imageView = dialogView.findViewById(R.id.dialog_imageview);
 
+        // Set the image on the ImageView
+        File imgFile = new File(imagePath);
+        if (imgFile.exists()) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            imageView.setImageBitmap(myBitmap);
+        } else {
+            Toast.makeText(this, "图片文件不存在", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        builder.setView(dialogView);
+        builder.setPositiveButton("关闭", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 }

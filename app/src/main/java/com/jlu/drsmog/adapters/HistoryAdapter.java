@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +32,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.textViewTime.setText(record.getTime());
         holder.textViewBlackness.setText(record.getBlackness());
         holder.textViewPath.setText(record.getPath());
+        holder.textViewName.setText(record.getName());
     }
     @Override
     public int getItemCount() {
@@ -42,11 +44,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         TextView textViewBlackness;
         TextView textViewPath;
 
+        TextView textViewName;
+
         public ViewHolder(View view) {
             super(view);
             textViewTime = view.findViewById(R.id.textView_time);
             textViewBlackness = view.findViewById(R.id.textView_blackness);
-            textViewPath = view.findViewById(R.id.textView_path); // 注意这里ID仍然是imageView_path，尽管它是TextView
+            textViewPath = view.findViewById(R.id.textView_path);
+            textViewName = view.findViewById(R.id.textView_name);
         }
     }
+
 }
